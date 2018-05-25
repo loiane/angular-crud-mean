@@ -1,3 +1,11 @@
-<p>
-  contacts works!
-</p>
+<mat-card>
+
+  <mat-list *ngIf="contacts$ | async; else isLoading">
+    contacts
+  </mat-list>
+
+
+  <ng-template #isLoading>
+    <mat-spinner style="margin:0 auto;"></mat-spinner>
+  </ng-template>
+</mat-card>

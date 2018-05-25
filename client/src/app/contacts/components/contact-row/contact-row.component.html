@@ -1,0 +1,12 @@
+<mat-list-item>
+  <span>{{ contact.name }}</span>
+  <span class="fill-remaining-space"></span>
+  <span>
+    <button mat-mini-fab (click)="onRemove()">
+      <mat-icon>delete_forever</mat-icon>
+    </button>
+    <button mat-mini-fab (click)="onEdit()" color="primary">
+      <mat-icon>mode_edit</mat-icon>
+    </button>
+    </span>
+</mat-list-item>

@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   template: `
   <mat-toolbar layout-align="center center" color="primary">
-    <h1>My Contacts</h1>
+    <h1>My Contacts - CRUD</h1>
   </mat-toolbar>
   <router-outlet></router-outlet>
   `

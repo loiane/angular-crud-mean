@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { take, tap } from 'rxjs/operators';
 
 import { Contact } from '../../model/contact';
 import { ContactsService } from '../../services/contacts.service';
@@ -11,7 +11,10 @@ import { ContactsService } from '../../services/contacts.service';
   styleUrls: ['./contacts.component.scss']
 })
 export class ContactsComponent implements OnInit {
-  contacts$: Observable<Contact[]>;
+
+  contacts: Contact[];
+  isLoadingResults = true;
+  displayedColumns = ['name', 'email', 'actions'];
 
   constructor(
     private router: Router,
@@ -20,6 +23,11 @@ export class ContactsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.contacts$ = this.contactsService.list();
+    this.contactsService.list()
+      .pipe(
+        take(1),
+        tap(data => this.isLoadingResults = false)
+      )
+      .subscribe(data =>  this.contacts = data);
   }
 }

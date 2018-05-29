@@ -1,11 +1,46 @@
-<mat-card>
+<div class="example-container mat-elevation-z8">
+  <mat-table #table [dataSource]="contacts">
 
-  <mat-list *ngIf="contacts$ | async; else isLoading">
-    contacts
-  </mat-list>
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{ element.email }} </mat-cell>
+    </ng-container>
+
+     <!-- actions -->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef class="action-col">
+        <button mat-mini-fab color="accent">
+          <mat-icon aria-label="Add">add</mat-icon>
+        </button>
+      </mat-header-cell>
+
+      <mat-cell *matCellDef="let row; let i=index;" class="action-col">
+        <button mat-icon-button color="primary">
+          <mat-icon aria-label="Edit">edit</mat-icon>
+        </button>
+
+        <button mat-icon-button color="warn">
+          <mat-icon aria-label="Delete">delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>
 
 
-  <ng-template #isLoading>
-    <mat-spinner style="margin:0 auto;"></mat-spinner>
-  </ng-template>
-</mat-card>
+<!-- Copyright 2017 Google Inc. All Rights Reserved.
+    Use of this source code is governed by an MIT-style license that
+    can be found in the LICENSE file at http://angular.io/license -->

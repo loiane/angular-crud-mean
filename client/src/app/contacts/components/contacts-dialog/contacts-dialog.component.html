@@ -1,3 +1,11 @@
-<p>
-  contacts-dialog works!
-</p>
+<div class="container">
+  <h3 mat-dialog-title>{{ data.name }}</h3>
+  <div mat-dialog-content>
+    Email: {{ data.email }}
+    <p></p>
+  </div>
+
+  <div mat-dialog-actions align="center">
+    <button mat-button [mat-dialog-close]="1">Ok</button>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+.mat-table {
+  overflow: auto;
+  max-height: 600px;
+}
+
+.action-col {
+  flex: 0 0 75px;
+}
+
+.example-loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name-link {
+  color: #1e88e5;
+  cursor: pointer;
+
+  &:hover{
+    text-decoration: underline;
+  }
+}

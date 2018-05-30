@@ -1,9 +1,56 @@
-<form class="example-form">
-  <mat-form-field class="example-full-width">
-    <input matInput placeholder="Favorite food" value="Sushi">
-  </mat-form-field>
+<mat-card>
 
-  <mat-form-field class="example-full-width">
-    <textarea matInput placeholder="Leave a comment"></textarea>
-  </mat-form-field>
-</form>
+  <mat-toolbar color="primary">Create New Contact</mat-toolbar>
+
+  <mat-card-content>
+    <form class="example-form" [formGroup]="form">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Name" formControlName="name" #name required>
+        <mat-hint align="end">{{ name.value.length }} / 200</mat-hint>
+        <mat-error *ngIf="isFieldValid('name')">
+          Name is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Email" formControlName="email" required>
+        <mat-error *ngIf="isFieldValid('email')">
+          Email is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-toolbar>
+        <span>Phones</span>
+        <div class="fill-remaining-space"></div>
+        <button mat-icon-button color="accent" (click)="addPhone()">
+          <mat-icon aria-label="Add New Phone">add</mat-icon>
+        </button>
+      </mat-toolbar>
+
+      <table class="example-full-width" cellspacing="0" formArrayName="phones" *ngFor="let phone of form.get('phones').controls; let i = index;">
+        <tr [formGroupName]="i">
+          <td style="width: 15%">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Area Code">
+            </mat-form-field>
+          </td>
+          <td style="width:73%">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Phone #">
+            </mat-form-field>
+          </td>
+          <td>
+            <button mat-icon-button color="warn">
+              <mat-icon aria-label="Remove Phone">delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+    <button mat-raised-button (click)="onCancel()">Cancel</button>
+  </mat-card-actions>
+</mat-card>

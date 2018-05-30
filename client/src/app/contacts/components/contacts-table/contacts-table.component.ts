@@ -13,6 +13,7 @@ export class ContactsTableComponent implements OnInit {
   @Output() details: EventEmitter<Contact> = new EventEmitter(false);
   @Output() edit: EventEmitter<Contact> = new EventEmitter(false);
   @Output() remove: EventEmitter<Contact> = new EventEmitter(false);
+  @Output() add: EventEmitter<any> = new EventEmitter(false);
 
   displayedColumns = ['name', 'email', 'actions'];
 
@@ -26,7 +27,7 @@ export class ContactsTableComponent implements OnInit {
   }
 
   onAdd() {
-
+    this.add.emit(true);
   }
 
   onEdit(record: Contact) {

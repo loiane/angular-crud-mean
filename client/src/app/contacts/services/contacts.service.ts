@@ -14,4 +14,8 @@ export class ContactsService {
   list() {
     return this.http.get<Contact[]>(this.API);
   }
+
+  save(record: Contact) {
+    return this.http.get<Contact>(this.API);
+  }
 }

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppMaterialModule } from '../shared/app-material/app-material.module';
 import { ContactsDialogComponent } from './components/contacts-dialog/contacts-dialog.component';
@@ -9,7 +10,7 @@ import { ContactsRoutingModule } from './contacts-routing.module';
 import { ContactsComponent } from './containers/contacts/contacts.component';
 
 @NgModule({
-  imports: [CommonModule, ContactsRoutingModule, AppMaterialModule],
+  imports: [CommonModule, ReactiveFormsModule, ContactsRoutingModule, AppMaterialModule],
   declarations: [
     ContactsComponent,
     ContactsTableComponent,

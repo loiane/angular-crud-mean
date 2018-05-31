@@ -1,10 +1,11 @@
-import { Contact } from './../../model/contact';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { Phone } from '../../model/phone';
 import { ContactsService } from '../../services/contacts.service';
+import { Contact } from './../../model/contact';
 
 @Component({
   selector: 'app-contacts-form',
@@ -30,14 +31,38 @@ export class ContactsFormComponent implements OnInit {
       // _id: [contact._id],
       name: [contact.name, [Validators.required, Validators.maxLength(200)]],
       email: [contact.email, [Validators.required, Validators.email]],
-      phones: this.formBuilder.array([ this.createPhone() ])
+      phones: this.formBuilder.array(this.retrievePhones(contact), Validators.required)
     });
   }
 
-  createPhone(): FormGroup {
+  minLengthArray(min: number) {
+    return (c: AbstractControl): { [key: string]: any } => {
+      if (c.value.length >= min) { return null; }
+
+      return { minLengthArray: { valid: false } };
+    };
+  }
+
+  retrievePhones(contact: Contact) {
+    const phones = [];
+    if (contact && contact.phones) {
+      contact.phones.forEach(phone => phones.push(this.createPhone(phone)));
+    } else {
+      phones.push(this.createPhone());
+    }
+    return phones;
+  }
+
+  createPhone(phone: Phone = { areaCode: null, phoneNumber: null }): FormGroup {
     return this.formBuilder.group({
-      areaCode: [null],
-      phoneNumber: [null]
+      areaCode: [
+        phone.areaCode,
+        [Validators.required, Validators.maxLength(3), Validators.minLength(3)]
+      ],
+      phoneNumber: [
+        phone.phoneNumber,
+        [Validators.required, Validators.maxLength(7), Validators.minLength(7)]
+      ]
     });
   }
 

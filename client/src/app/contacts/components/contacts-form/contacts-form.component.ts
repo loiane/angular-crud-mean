@@ -43,6 +43,10 @@ export class ContactsFormComponent implements OnInit {
     };
   }
 
+  getPhoneFormArray() {
+    return (<FormArray>this.form.get('phones')).controls;
+  }
+
   retrievePhones(contact: Contact) {
     const phones = [];
     if (contact && contact.phones) {

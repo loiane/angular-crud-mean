@@ -27,16 +27,16 @@
         </button>
       </mat-toolbar>
 
-      <table class="example-full-width" cellspacing="0" formArrayName="phones" *ngFor="let phone of form.get('phones').controls; let i = index;">
+      <table class="example-full-width" cellspacing="0" formArrayName="phones" *ngFor="let phone of getPhoneFormArray(); let i = index;">
         <tr [formGroupName]="i">
           <td style="width: 15%">
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Area Code">
+              <input matInput placeholder="Area Code" formControlName="areaCode">
             </mat-form-field>
           </td>
           <td style="width:73%">
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Phone #">
+              <input matInput placeholder="Phone #" formControlName="phoneNumber">
             </mat-form-field>
           </td>
           <td>

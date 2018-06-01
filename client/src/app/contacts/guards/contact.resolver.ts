@@ -16,7 +16,7 @@ export class ContactResolver implements Resolve<Contact> {
     state: RouterStateSnapshot
   ): Observable<Contact> {
     if (route.params != null && route.params.id != null) {
-      // return this.contactsService.loadById(route.params.id);
+      return this.contactsService.loadById(route.params.id);
     }
     return of({
       _id: null,

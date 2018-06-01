@@ -38,7 +38,7 @@ export class ContactsComponent implements OnInit {
   }
 
   onEdit(record: Contact) {
-    this.router.navigate(['edit', record.name], { relativeTo: this.route });
+    this.router.navigate(['edit', record._id], { relativeTo: this.route });
   }
 
   onRemove(record: Contact) {

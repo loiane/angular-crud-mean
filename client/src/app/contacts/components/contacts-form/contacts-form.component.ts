@@ -28,7 +28,7 @@ export class ContactsFormComponent implements OnInit {
     const contact = this.route.snapshot.data['contact'];
 
     this.form = this.formBuilder.group({
-      // _id: [contact._id],
+      _id: [contact._id],
       name: [contact.name, [Validators.required, Validators.maxLength(200)]],
       email: [contact.email, [Validators.required, Validators.email]],
       phones: this.formBuilder.array(this.retrievePhones(contact), Validators.required)

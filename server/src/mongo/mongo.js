@@ -10,7 +10,7 @@ const mongoUri = `mongodb://localhost:27017/contactsCrud`;
 
 function connect() {
  mongoose.set('debug', true);
- return mongoose.connect(mongoUri, { useMongoClient: true });
+ return mongoose.connect(mongoUri);
 }
 
 module.exports = {

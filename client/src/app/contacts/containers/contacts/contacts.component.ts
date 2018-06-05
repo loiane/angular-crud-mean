@@ -1,11 +1,13 @@
-import { ContactsDialogComponent } from './../../components/contacts-dialog/contacts-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { Contact } from '../../model/contact';
 import { ContactsService } from '../../services/contacts.service';
+import { ErrorDialogComponent } from './../../../shared/error-dialog/error-dialog.component';
+import { ContactsDialogComponent } from './../../components/contacts-dialog/contacts-dialog.component';
 
 @Component({
   selector: 'app-contacts',
@@ -24,7 +26,17 @@ export class ContactsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.contacts$ = this.contactsService.list();
+    this.contacts$ = this.contactsService.list()
+    .pipe(catchError(error => {
+      this.onError();
+      return of([]);
+    }));
+  }
+
+  onError() {
+    this.dialog.open(ErrorDialogComponent, {
+      data: 'Erro'
+    });
   }
 
   onDetails(record: Contact) {

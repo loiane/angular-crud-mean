@@ -1,9 +1,17 @@
 <div class="example-container mat-elevation-z8">
 
-  <app-contacts-table
-    [contacts]="contacts$ | async"
+  <app-contacts-table *ngIf="contacts$ | async as contacts; else errorMsg"
+    [contacts]="contacts"
     (details)="onDetails($event)"
     (edit)="onEdit($event)"
     (remove)="onRemove($event)"
-    (add)="onAdd()"></app-contacts-table>
+    (add)="onAdd()">
+  </app-contacts-table>
+
+  <ng-template #errorMsg>
+    <div class="example-loading-shade">
+      <mat-spinner *ngIf="!contacts"></mat-spinner>
+    </div>
+  </ng-template>
+
 </div>

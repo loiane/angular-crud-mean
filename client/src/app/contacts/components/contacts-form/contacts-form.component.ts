@@ -1,11 +1,28 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  NgForm,
+  Validators
+} from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Phone } from '../../model/phone';
 import { ContactsService } from '../../services/contacts.service';
 import { Contact } from './../../model/contact';
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 
 @Component({
   selector: 'app-contacts-form',
@@ -13,9 +30,9 @@ import { Contact } from './../../model/contact';
   styleUrls: ['./contacts-form.component.scss']
 })
 export class ContactsFormComponent implements OnInit {
-  private formSumitAttempt = false;
   form: FormGroup;
   phones: any = [];
+  matcher = new MyErrorStateMatcher();
 
   constructor(
     private route: ActivatedRoute,
@@ -33,14 +50,6 @@ export class ContactsFormComponent implements OnInit {
       email: [contact.email, [Validators.required, Validators.email]],
       phones: this.formBuilder.array(this.retrievePhones(contact), Validators.required)
     });
-  }
-
-  minLengthArray(min: number) {
-    return (c: AbstractControl): { [key: string]: any } => {
-      if (c.value.length >= min) { return null; }
-
-      return { minLengthArray: { valid: false } };
-    };
   }
 
   getPhoneFormArray() {
@@ -75,28 +84,49 @@ export class ContactsFormComponent implements OnInit {
     this.phones.push(this.createPhone());
   }
 
-  isFieldValid(field: string) {
-    return (
-      (!this.form.get(field).valid && this.form.get(field).touched) ||
-      (this.form.get(field).untouched && this.formSumitAttempt === true)
-    );
+  isFieldRequired(field: string) {
+    return this.form.get(field).hasError('required');
   }
 
-  markFieldTouched() {
+  isEmailValid(field: string) {
+    return this.form.get(field).hasError('email') && !this.form.get(field).hasError('required');
+  }
+
+  isFormArrayValid(field: string) {
+    return !this.form.get(field).valid && this.form.get(field).touched;
+  }
+
+  getFormArrayClass(field: string) {
+    return this.isFormArrayValid(field) ? 'form-array-color-error' : '' ;
+  }
+
+  /* markFieldTouched() {
     this.form.get('email').markAsTouched();
     this.form.get('name').markAsTouched();
+    this.form.get('phones').markAsTouched();
+  } */
+
+  validateAllFormFields(formGroup: FormGroup | FormArray) {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      if (control instanceof FormControl) {
+        control.markAsTouched({ onlySelf: true });
+      } else if (control instanceof FormGroup || control instanceof FormArray) {
+        control.markAsTouched({ onlySelf: true });
+        this.validateAllFormFields(control);
+      }
+    });
   }
 
   onSubmit() {
-    this.formSumitAttempt = true;
-    this.markFieldTouched();
     if (this.form.valid) {
-      this.contactsService.save(this.form.value).subscribe(data => this.onCancel());
+      this.contactsService.save(this.form.value).subscribe(data => this.onCancel(), error => console.log(error));
+    } else {
+      this.validateAllFormFields(this.form);
     }
   }
 
   onCancel() {
-    this.formSumitAttempt = false;
     this.location.back();
   }
 }

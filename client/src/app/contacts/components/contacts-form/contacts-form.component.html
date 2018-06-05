@@ -5,27 +5,34 @@
   <mat-card-content>
     <form class="example-form" [formGroup]="form">
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Name" formControlName="name" #name required>
+        <input matInput placeholder="Name" formControlName="name" #name [errorStateMatcher]="matcher">
         <mat-hint align="end">{{ name.value.length }} / 200</mat-hint>
-        <mat-error *ngIf="isFieldValid('name')">
+        <mat-error *ngIf="isFieldRequired('name')">
           Name is required
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Email" formControlName="email" required>
-        <mat-error *ngIf="isFieldValid('email')">
+        <input matInput placeholder="Email" formControlName="email" [errorStateMatcher]="matcher">
+        <mat-error *ngIf="isFieldRequired('email')">
           Email is required
+        </mat-error>
+        <mat-error *ngIf="isEmailValid('email')">
+          Please enter a valid email address
         </mat-error>
       </mat-form-field>
 
       <mat-toolbar>
-        <span>Phones</span>
+        <span [ngClass]="getFormArrayClass('phones')">Phones</span>
         <div class="fill-remaining-space"></div>
         <button mat-icon-button color="accent" (click)="addPhone()">
           <mat-icon aria-label="Add New Phone">add</mat-icon>
         </button>
       </mat-toolbar>
+
+      <mat-error *ngIf="isFormArrayValid('phones')" class="form-array-error">
+        Please enter a at least one phone number
+      </mat-error>
 
       <table class="example-full-width" cellspacing="0" formArrayName="phones" *ngFor="let phone of getPhoneFormArray(); let i = index;">
         <tr [formGroupName]="i">

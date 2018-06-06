@@ -35,7 +35,7 @@ export class ContactsComponent implements OnInit {
 
   onError() {
     this.dialog.open(ErrorDialogComponent, {
-      data: 'Erro'
+      data: 'Error while trying to save the information.'
     });
   }
 

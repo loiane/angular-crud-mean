@@ -39,11 +39,23 @@
           <td style="width: 15%">
             <mat-form-field class="example-full-width">
               <input matInput placeholder="Area Code" formControlName="areaCode">
+              <mat-error *ngIf="isFieldRequiredArray('phones', 'areaCode', i)">
+                  Area Code is required
+              </mat-error>
+              <mat-error *ngIf="verifyFieldLength('phones', 'areaCode', i)">
+                  Area Code requires 3 digits.
+              </mat-error>
             </mat-form-field>
           </td>
           <td style="width:73%">
             <mat-form-field class="example-full-width">
               <input matInput placeholder="Phone #" formControlName="phoneNumber">
+              <mat-error *ngIf="isFieldRequiredArray('phones', 'phoneNumber', i)">
+                  Phone # is required
+              </mat-error>
+              <mat-error *ngIf="verifyFieldLength('phones', 'phoneNumber', i)">
+                  Area Code requires 7 digits.
+              </mat-error>
             </mat-form-field>
           </td>
           <td>

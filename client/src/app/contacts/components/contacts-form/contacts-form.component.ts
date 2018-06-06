@@ -1,17 +1,11 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormGroupDirective,
-  NgForm,
-  Validators
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 
+import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.component';
 import { Phone } from '../../model/phone';
 import { ContactsService } from '../../services/contacts.service';
 import { Contact } from './../../model/contact';
@@ -38,6 +32,7 @@ export class ContactsFormComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private formBuilder: FormBuilder,
+    private dialog: MatDialog,
     private contactsService: ContactsService
   ) {}
 
@@ -96,6 +91,17 @@ export class ContactsFormComponent implements OnInit {
     return !this.form.get(field).valid && this.form.get(field).touched;
   }
 
+  isFieldRequiredArray(formControl: string, field: string, index: number) {
+    const formArray = this.form.get(formControl) as FormArray;
+    return formArray.controls[index].get(field).hasError('required');
+  }
+
+  verifyFieldLength(formControl: string, field: string, index: number) {
+    const formArray = this.form.get(formControl) as FormArray;
+    return formArray.controls[index].get(field).hasError('minlength') ||
+    formArray.controls[index].get(field).hasError('maxlength');
+  }
+
   getFormArrayClass(field: string) {
     return this.isFormArrayValid(field) ? 'form-array-color-error' : '' ;
   }
@@ -120,10 +126,17 @@ export class ContactsFormComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.contactsService.save(this.form.value).subscribe(data => this.onCancel(), error => console.log(error));
+      this.contactsService.save(this.form.value)
+        .subscribe(data => this.onCancel(), error => this.onError());
     } else {
       this.validateAllFormFields(this.form);
     }
+  }
+
+  onError() {
+    this.dialog.open(ErrorDialogComponent, {
+      data: 'Error while trying to load data from server.'
+    });
   }
 
   onCancel() {

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { Contact } from '../../model/contact';
 import { ContactsService } from '../../services/contacts.service';
+import { ConfirmationDialogComponent } from './../../../shared/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from './../../../shared/error-dialog/error-dialog.component';
 import { ContactsDialogComponent } from './../../components/contacts-dialog/contacts-dialog.component';
 
@@ -15,27 +17,32 @@ import { ContactsDialogComponent } from './../../components/contacts-dialog/cont
   styleUrls: ['./contacts.component.scss']
 })
 export class ContactsComponent implements OnInit {
-
   contacts$: Observable<Contact[]>;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
+    private snackBar: MatSnackBar,
     private contactsService: ContactsService
   ) {}
 
   ngOnInit() {
-    this.contacts$ = this.contactsService.list()
-    .pipe(catchError(error => {
-      this.onError();
-      return of([]);
-    }));
+    this.refresh();
   }
 
-  onError() {
+  refresh() {
+    this.contacts$ = this.contactsService.list().pipe(
+      catchError(error => {
+        this.onError('Error while trying to save the information.');
+        return of([]);
+      })
+    );
+  }
+
+  onError(message: String) {
     this.dialog.open(ErrorDialogComponent, {
-      data: 'Error while trying to save the information.'
+      data: message
     });
   }
 
@@ -54,7 +61,25 @@ export class ContactsComponent implements OnInit {
   }
 
   onRemove(record: Contact) {
-
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: 'Are you sure you want to delete this record?'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.contactsService
+          .remove(record._id)
+          .subscribe(
+            () => {
+              this.refresh();
+              this.snackBar.open('Record removed successfully!', 'X', {
+                duration: 3000,
+                verticalPosition: 'top',
+                horizontalPosition: 'center'
+              });
+            },
+            error => this.onError('Error while trying to delete the record.')
+          );
+      }
+    });
   }
-
 }
